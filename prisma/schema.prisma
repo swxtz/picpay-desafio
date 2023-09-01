@@ -19,6 +19,7 @@ datasource db {
 model User {
     id       String    @id @default(uuid())
     name     String
+    password String
     email    String    @unique
     Document Document?
 

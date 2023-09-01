@@ -5,6 +5,7 @@ CREATE TYPE "DocumentType" AS ENUM ('CPF', 'CNPJ');
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
