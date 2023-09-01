@@ -7,11 +7,36 @@ generator client {
 
 generator erd {
     provider = "prisma-erd-generator"
-    output   = "../erd.svg"
+    output   = "../docs/erd.svg"
     theme    = "dark"
 }
 
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
+}
+
+model User {
+    id       String    @id @default(uuid())
+    name     String
+    email    String    @unique
+    Document Document?
+
+    @@map("users")
+}
+
+model Document {
+    id     String       @id @default(uuid())
+    userId String       @unique
+    number Int          @unique
+    type   DocumentType
+
+    user User @relation(fields: [userId], references: [id])
+
+    @@map("documents")
+}
+
+enum DocumentType {
+    CPF
+    CNPJ
 }
