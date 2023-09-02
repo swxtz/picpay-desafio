@@ -53,6 +53,8 @@ export class UsersService {
             throw new HttpException("Document already exists", 400);
         }
 
+        await this.cache.del("users");
+
         const hashedPassword = await this.argon.hash(data.password);
         await this.prisma.user.create({
             data: {
@@ -68,5 +70,25 @@ export class UsersService {
             },
         });
         return data;
+    }
+
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(30)
+    async findAll() {
+        const cachedData = await this.cache.get("users");
+
+        if (cachedData) {
+            return cachedData;
+        }
+
+        const query = await this.prisma.user.findMany({
+            include: {
+                Document: false,
+            },
+        });
+
+        await this.cache.set("users", query);
+
+        return query;
     }
 }
