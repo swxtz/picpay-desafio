@@ -17,11 +17,13 @@ datasource db {
 }
 
 model User {
-    id       String    @id @default(uuid())
-    name     String
-    password String
-    email    String    @unique
-    Document Document?
+    id           String        @id @default(uuid())
+    name         String
+    password     String
+    email        String        @unique
+    userRole     UserRole      @default(CONSUMER) @map("user_role")
+    Document     Document?
+    Transactions Transaction[]
 
     @@map("users")
 }
@@ -37,7 +39,30 @@ model Document {
     @@map("documents")
 }
 
+enum UserRole {
+    CONSUMER
+    MERCHANT
+}
+
 enum DocumentType {
     CPF
     CNPJ
+}
+
+model Transaction {
+    id      String            @id @default(uuid())
+    value   Float
+    payerId String            @map("payer_id")
+    payeeId String            @map("payee_id")
+    status  TransactionStatus
+
+    payer User @relation(fields: [payerId], references: [id])
+
+    @@map("transactions")
+}
+
+enum TransactionStatus {
+    PENDING
+    COMPLETED
+    CANCELED
 }

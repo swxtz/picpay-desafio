@@ -7,8 +7,6 @@ export class UsersService {
     constructor(private prisma: PrismaService) {}
 
     async create(data: CreateUserDto) {
-        const document = Number(data.document);
-
         await this.prisma.user.create({
             data: {
                 email: data.email,
