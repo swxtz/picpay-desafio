@@ -17,7 +17,7 @@ datasource db {
 }
 
 model User {
-    id        String   @id @default(uuid())
+    id        Int      @id @default(autoincrement())
     name      String
     password  String
     email     String   @unique
@@ -32,8 +32,8 @@ model User {
 }
 
 model Document {
-    id     String       @id @default(uuid())
-    userId String       @unique
+    id     Int          @id @default(autoincrement())
+    userId Int          @unique
     number BigInt       @unique
     type   DocumentType
 
@@ -54,18 +54,18 @@ enum DocumentType {
 }
 
 model Transaction {
-    id         String            @id @default(uuid())
+    id         Int               @id @default(autoincrement())
     value      Float
-    documentId String            @map("document_id")
-    payerId    String            @map("payer_id")
-    payeeId    String            @map("payee_id")
+    documentId Int               @map("document_id")
+    payerId    Int               @map("payer_id")
+    payeeId    Int               @map("payee_id")
     status     TransactionStatus
     createdAt  DateTime          @default(now()) @map("created_at")
     updatedAt  DateTime          @default(now()) @updatedAt @map("updated_at")
     canceledAt DateTime?         @map("canceled_at")
 
     User     User?     @relation(fields: [userId], references: [id])
-    userId   String?
+    userId   Int?
     Document Document? @relation(fields: [documentId], references: [id])
 
     @@map("transactions")
