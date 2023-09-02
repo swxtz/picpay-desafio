@@ -14,6 +14,18 @@ services:
         volumes:
             - postgres_data:/bitnami/postgresql
 
+    redis: 
+        container_name: redis
+        image: bitnami/redis:latest
+        restart: always
+        ports:
+            - 6379:6379
+        # command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+        command: redis-server --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+        volumes:
+            - redis_data:/data
 volumes:
     postgres_data:
+        driver: local
+    redis_data:
         driver: local
