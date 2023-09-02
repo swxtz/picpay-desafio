@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UsePipes } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    UsePipes,
+} from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "src/users/dtos/create-user.dtos";
 import { ZodValidationPipe } from "nestjs-zod";
@@ -16,5 +24,10 @@ export class UsersController {
     @Get("all")
     async findAll() {
         return this.usersService.findAll();
+    }
+
+    @Delete("/:id")
+    async delete(@Param("id") id) {
+        return this.usersService.delete(id);
     }
 }

@@ -82,13 +82,41 @@ export class UsersService {
         }
 
         const query = await this.prisma.user.findMany({
-            include: {
-                Document: false,
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                createdAt: true,
+                updatedAt: true,
             },
         });
 
         await this.cache.set("users", query);
 
         return query;
+    }
+
+    async delete(id) {
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            include: {
+                Document: true,
+            },
+        });
+
+        if (!user) {
+            throw new HttpException("User not found", 404);
+        }
+
+        await this.prisma.document.delete({
+            where: { id: user.Document?.id },
+        });
+        await this.prisma.user.delete({
+            where: {
+                id,
+            },
+        });
+        await this.cache.del(user.email);
+        await this.cache.del("users");
     }
 }
