@@ -38,14 +38,22 @@ export class UsersService {
             },
         });
 
-        const hashedPassword = await this.argon.hash(data.password);
-
+        const verifyDocument = await this.prisma.document.findUnique({
+            where: {
+                number: Number(data.document),
+            },
+        });
         if (verifyEmail) {
-            console.log("aqui");
             await this.cache.set(data.email, data.email);
             throw new HttpException("Email already exists", 400);
         }
 
+        if (verifyDocument) {
+            await this.cache.set(data.document, data.document);
+            throw new HttpException("Document already exists", 400);
+        }
+
+        const hashedPassword = await this.argon.hash(data.password);
         await this.prisma.user.create({
             data: {
                 email: data.email,
